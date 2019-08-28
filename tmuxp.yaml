@@ -1,0 +1,25 @@
+session_name: docker-demo
+windows:
+- window_name: docker-demo
+  layout: tiled
+  shell_command_before:
+    - cd ~/Desktop/k8s-mastery
+  panes:
+    - shell_command:
+      - cd sa-logic/sa
+      - pip3 install -r requirements.txt 
+      - python3 -m textblob.download_corpora
+      - python3 sentiment_analysis.py
+
+    - shell_command:
+      - cd sa-webapp
+      - mvn install
+      - slep 3
+      - java -jar target/sentiment-analysis-web-0.0.1-SNAPSHOT.jar --sa.logic.api.url=http://localhost:5000
+
+    - shell_command:
+      - cd sa-frontend
+      - npm i
+      - sleep 4
+      - npm start
+    
