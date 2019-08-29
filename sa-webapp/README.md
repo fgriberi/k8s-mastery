@@ -23,6 +23,8 @@ Copy the id of sa-logic container and execute:
 
 The Containers IP address is found under the property NetworkSettings.IPAddress, use it in the RUN command.
 
+`docker inspect -f '{{ .NetworkSettings.IPAddress }}' <container_id> `
+
 #### Docker Machine on a VM 
 Get Docker Machine IP by executing:
 
