@@ -16,6 +16,8 @@ windows:
       - mvn install
       - slep 3
       - java -jar target/sentiment-analysis-web-0.0.1-SNAPSHOT.jar --sa.logic.api.url=http://localhost:5000
+      # sudo lsof -i tcp:8080
+      # kill -9 PID
 
     - shell_command:
       - cd sa-frontend
