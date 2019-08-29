@@ -1,0 +1,22 @@
+---
+- name: Build images for Docker 101 demo using the command module
+  hosts: localhost
+  connection: local
+  tasks:
+    - name: build sa-frontend image
+      command: chdir=sa-frontend {{ item }}
+      with_items:
+        - npm i
+        - npm run build
+        - docker build -t fgriberi/sentiment-analysis-frontend .
+
+    - name: build sa-logic image
+      command: docker build -t fgriberi/sentiment-analysis-logic . chdir=sa-logic
+        
+    - name: build sa-webapp image
+      command: chdir=sa-webapp {{ item }}
+      with_items:
+        - mvn install
+        - docker build -t fgriberi/sentiment-analysis-web-app .
+
+# TODO: https://docs.ansible.com/ansible/latest/modules/docker_image_module.html

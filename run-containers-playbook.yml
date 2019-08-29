@@ -1,0 +1,21 @@
+---
+- name: Run containers for Docker 101 demo
+  hosts: localhost
+  tasks:
+
+    - name: run sa-frontend docker container
+      command: docker run -d -p 80:80 fgriberi/sentiment-analysis-frontend
+
+    - name: run sa-logic docker container
+      command: docker run -d -p 5050:5000 fgriberi/sentiment-analysis-logic
+
+    - name: Get PID of last executed container 
+      shell: "docker ps -l -q"
+      register: logic_container_pid
+ 
+    - name: Get IP of logic container
+      shell: "docker inspect --format '{''{ .NetworkSettings.IPAddress }''}'  {{logic_container_pid.stdout}}"
+      register: logic_container_id
+
+    - name: run sa-webapp docker container
+      command: docker run -d -p 8080:8080 -e SA_LOGIC_API_URL=http://{{logic_container_id.stdout}}:5000 fgriberi/sentiment-analysis-web-app
