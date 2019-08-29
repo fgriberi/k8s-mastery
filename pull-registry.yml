@@ -1,0 +1,13 @@
+---
+- name: Tag and push each image for Docker 101 demo
+  hosts: localhost
+  tasks:
+
+    - name: pull sa-frontend image to docker hub
+      command: docker pull fgriberi/sentiment-analysis-frontend:demo
+
+    - name: pull sa-logic image to docker hub
+      command: docker pull fgriberi/sentiment-analysis-logic:demo
+
+    - name: pull sa-webapp image to docker hub
+      command: docker pull fgriberi/sentiment-analysis-web-app:demo

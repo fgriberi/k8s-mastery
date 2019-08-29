@@ -1,0 +1,23 @@
+---
+- name: Run containers for Docker 101 demo
+  hosts: localhost
+  tasks:
+
+    - name: tag sa-frontend image
+      command: docker tag sentiment-analysis-frontend fgriberi/sentiment-analysis-frontend:demo
+
+    - name: push sa-frontend image to docker hub
+      command: docker push fgriberi/sentiment-analysis-frontend:demo
+
+
+    - name: tag sa-logic image
+      command: docker tag sentiment-analysis-logic fgriberi/sentiment-analysis-logic:demo
+
+    - name: push sa-logic image to docker hub
+      command: docker push fgriberi/sentiment-analysis-logic:demo
+
+    - name: tag sa-webapp image
+      command: docker tag sentiment-analysis-web-app fgriberi/sentiment-analysis-web-app:demo
+
+    - name: push sa-webapp image to docker hub
+      command: docker push fgriberi/sentiment-analysis-web-app:demo

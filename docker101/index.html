@@ -335,14 +335,9 @@
 							tmuxp load tmuxp.yml
 							ansible-playbook build-images-playbook.yml
 							ansible-playbook run-containers-playbook.yml
-
-							Share image
-								docker login
-								docker tag image username/repository:tag
-									-> For example: docker tag friendlyhello gordon/get-started:part2
-								docker push username/repository:tag
-								borrar y traer del repository:
-									docker run -p 4000:80 username/repository:tag
+							ansible-playbook push-registry.yml
+							ansible-playbook pull-registry.yml
+							ansible-playbook run-containers-from-registry-playbook.yml
 						</aside>
 					</section>
 				</section>

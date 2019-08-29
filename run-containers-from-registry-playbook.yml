@@ -4,10 +4,10 @@
   tasks:
 
     - name: run sa-frontend docker container
-      command: docker run -d -p 80:80 sentiment-analysis-frontend
+      command: docker run -d -p 80:80 fgriberi/sentiment-analysis-frontend:demo
 
     - name: run sa-logic docker container
-      command: docker run -d -p 5050:5000 sentiment-analysis-logic
+      command: docker run -d -p 5050:5000 fgriberi/sentiment-analysis-logic:demo
 
     - name: Get PID of last executed container 
       shell: "docker ps -l -q"
@@ -18,4 +18,4 @@
       register: logic_container_id
 
     - name: run sa-webapp docker container
-      command: docker run -d -p 8080:8080 -e SA_LOGIC_API_URL=http://{{logic_container_id.stdout}}:5000 sentiment-analysis-web-app
+      command: docker run -d -p 8080:8080 -e SA_LOGIC_API_URL=http://{{logic_container_id.stdout}}:5000 fgriberi/sentiment-analysis-web-app:demo
