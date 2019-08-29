@@ -1,0 +1,39 @@
+Serving static files with Nginx
+
+
+
+
+image: rinormaloku/sentiment-analysis-frontend
+name: sa-frontend      
+
+
+docker build -f Dockerfile -t fgriberi/sentiment-analysis-frontend .
+docker push fgriberi/sentiment-analysis-frontend
+
+docker pull fgriberi/sentiment-analysis-frontend
+docker run -d -p 80:80 fgriberi/sentiment-analysis-frontend
+
+
+
+
+
+- image: rinormaloku/sentiment-analysis-logic
+- sa-logic
+
+
+docker build -f Dockerfile -t fgriberi/sentiment-analysis-logic .
+docker push fgriberi/sentiment-analysis-frontend
+docker run -d -p 5050:5000 fgriberi/sentiment-analysis-logic
+
+
+
+
+- image: rinormaloku/sentiment-analysis-web-app
+- sa-web
+
+
+docker run -d -p 5050:5000 $DOCKER_USER_ID/sentiment-analysis-logic
+docker run -d -p 8080:8080 -e SA_LOGIC_API_URL='http://localhost:5000' $DOCKER_USER_ID/sentiment-analysis-web-app
+docker run -d -p 80:80 $DOCKER_USER_ID/sentiment-analysis-frontend
+
+

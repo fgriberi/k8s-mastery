@@ -1,0 +1,672 @@
+<!doctype html>
+<html lang="en">
+
+	<head>
+		<meta charset="utf-8">
+
+		<title>Docker 101</title>
+
+		<meta name="description" content="A framework for easily creating beautiful presentations using HTML">
+		<meta name="author" content="Hakim El Hattab">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<link rel="stylesheet" href="css/reveal.css">
+		<link rel="stylesheet" href="css/theme/black.css" id="theme">
+		<link rel="stylesheet" href="lib/css/zenburn.css">
+
+		<script>
+			var link = document.createElement( 'link' );
+			link.rel = 'stylesheet';
+			link.type = 'text/css';
+			link.href = window.location.search.match( /print-pdf/gi ) ? 'css/print/pdf.css' : 'css/print/paper.css';
+			document.getElementsByTagName( 'head' )[0].appendChild( link );
+		</script>
+		<script>
+		  if( window.location.search.match( /print-pdf/gi ) ) {
+		    var link = document.createElement( 'link' );
+		    link.rel = 'stylesheet';
+		    link.type = 'text/css';
+		    link.href = 'reveal.js/css/print/pdf.css';
+		    document.getElementsByTagName( 'head' )[0].appendChild( link );
+		  }
+		</script>
+	</head>
+
+	<body>
+
+		<div class="reveal">
+			<div class="slides">
+				<section>
+					<h1>Docker 101</h1>
+					<p>
+						<small>Created by <a href="https://github.com/fgriberi">Franco G. Riberi.</a></small>
+					</p>
+					<img src="images/simple_logo.svg" style="align:center; vertical-align:middle" alt="Google" height="115" width="115">
+					<aside class="notes">
+						101 is a topic for beginners in any area. It has all the basic principles and concepts that is expected in a particular field. --Wikipedia
+
+						Goals:
+						1. still with the toptive talks
+						2. pre-requeriment to k8s talks
+					</aside>
+				</section>
+
+				<section>
+					<section>
+						<h3>for the anxious</h3>
+						<img src="https://media1.tenor.com/images/f573cf10fe1ee7e9291c739cd70f8bc8/tenor.gif?itemid=7385066" height="315" width="515">
+						<p>rm -rf /home .... :-(</p>
+						<aside class="notes">
+
+							docker run -it ubuntu sh
+							rm -rf /home							
+							rm -rf /bin
+
+							Danger Zone: If you're feeling particularly adventurous you can try rm -rf bin in the container. Make sure you run this command in the container and not in your laptop/desktop. Doing this will not make any other commands like ls, uptime work. 
+						</aside>
+					</section>
+					
+					<section>
+						<h2>It works on my machine!</h2>
+						<img src="images/ops-problem.jpg">
+						<aside class="notes">
+							Who has never had said: It works on my machine!!!. Many times as developer we have problems, with environments, libraries, dependencies, etc. In our local env it's working but on production not.
+							One deep abstraction level, let's think about multiples stacks and multiple hardware.
+						</aside>
+					</section>	
+
+					<section>
+						<h2>The Challenge</h2>
+						<img src="images/challenge.png">
+						<aside class="notes">
+							Nowadays we have multiple technology stacks and many interaction and also we have many platforms of hardware where the app show works. If we create a function with this to variables we get something like this matrix. Generally known as: The Matrix of Hell.
+							Diff OS, multiple component versions, own proj config, etc
+
+							Some solution as first approch: bash script, vmware, vagrant, version managers, package managers, ansible, puppets
+						</aside>	
+					</section>
+
+					<section>
+						<h3>The Matrix of Hell</h3>
+						<img src="images/hell-matrix.png">	
+						<aside class="notes">
+							Many configuration, manual step to see which combination is working and which one not.
+						</aside>	
+					</section>
+
+					<section>
+						<h3>Transport problem before 60'</h3>
+						<img src="images/transport-problem.png">	
+						<aside class="notes">
+							If we think on transportation problem before 60', it's exactly an analogy.
+						</aside>
+					</section>
+				
+					<section>
+						<h2>Solution</h2>
+						<img src="images/solution-transport.png">
+						<aside class="notes">
+							Basicamente la idea es una caja negra que permita a cualquier carga util ser encapsulada de forma portable, ligera y autosuficiente, que pueda ser manupulado usando operaciones estandares en cualquier plataforma.
+						</aside>
+					</section>
+
+					<section>
+						<h2>Same approch</h2>
+						<img src="images/so-docker.png">
+						<h4>run anything, run everywhere!</h4>
+						<aside class="notes">
+							A black box that can: run anything, run everywhere!
+
+							Basically a container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.	
+						<aside>
+					</section>
+
+					<section>
+						<h3>A new concept? Not at all</h3>
+						<img src="images/docker-origin.png">
+						<aside class="notes">
+							Containers are not new, but their use for easily deploying applications is.
+
+							chroot
+							virtualization: Qemu, KVM, vmware, VirtualBox, Xen, OpenVZ
+							cloud: lassS, SaaS, PaaS
+							containerization: LXC - Docker
+
+							Chroot is an operation that changes the apparent root directory for 
+							the current running process and their children. A program that is run 
+							in such a modified environment cannot access files and commands outside 
+							that environmental directory tree. This modified environment is called 
+							a chroot jail. -- From Archwiki, chroot
+						</aside>	
+					</section>
+
+					<section>
+						<h2>Containers sound likes a VM</h2>
+						<img src="images/vm-vs-container.png">
+						<aside class="notes">
+							Containers and virtual machines have similar resource isolation and allocation benefits, but function differently because containers virtualize the operating system instead of hardware. Containers are more portable and efficient.
+
+							A container runs natively on Linux and shares the kernel of the HOST machine with other containers. Multiple containers can run on the same machine and share the OS kernel with other containers, each running as isolated processes in user space. Containers take up less space than VMs (container images are typically tens of MBs in size), can handle more applications and require fewer VMs and Operating systems.
+
+							By contrast, Virtual machines (VMs) are an abstraction of physical hardware turning one server into many servers. The hypervisor allows multiple VMs to run on a single machine. Each VM includes a full copy of an operating system, the application, necessary binaries and libraries - taking up tens of GBs. VMs can also be slow to boot. In general, VMs provide an environment with more resources than most applications need.
+							The limitations of containers vs VM should be obvious now: You can't run completely different OS in containers like in VMs.
+
+							A alto nivel, es una especie de VM liviana
+								- propio espacio de procesos
+								- propia interface de red
+								- puede correr cosas como root
+
+							A bajo nivel:
+								- contenedores con procesos aislados
+								- comparte kernel con le host
+						<aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>So, what docker is?</h2>
+						
+						<img src="images/build-ship-and-run.jpg">
+						<aside class="notes">
+							If we said that docker is a lightweight virtual machine or a chroot on steroids are good descriptions.
+
+							Docker is one of the easiest ways to build, ship and run your applications across various environments.
+
+							standard format for container, ecosystem
+
+							As developer: build once, run anywhere!
+								entorno limpio, seguro y portatil
+								despreocuparse por las versiones, paquees, etc
+								ejecucion aislada
+								automatice las pruebas, integracion, 
+								compatibilidad de operaciones
+								- se preocupa por lo que hay dentro
+									code, libs, apps, datos
+
+							As devops/sys admin: configure one, run anything!
+								elimina inconsistencias de entornos
+								apoya la separacion de features
+								mejora integridad, CD, CI
+								reduce costos de despliegue
+								- se preocupa por lo que hay fuera
+									loging, acceso remote, monitoreo, configuraciond de red
+
+							Docker is also the contract between Developers and Operations (two different worlds). Developers and Operations often have very different attitudes when it comes to choosing tools and environments.
+						<aside>
+					</section>
+
+					<section>
+						<h2>Why Docker?</h2>
+						<img src="images/why-docker.png">
+						<aside class="notes">
+							Docker is an open-source project written in Go. 
+							multiplatform -> flexibilidad y portabilidad. size, startup, integration
+
+							ventajas:
+								Portable, Flexible, Ligero, Aislamiento, Inmutable
+								creacion de entornos aislados
+								escala rapidamente
+								rapidos despliegues en cliente
+								share images
+
+								ejecuta en cualquier lado, no importa la version del kernel
+								sin importar la distribucion Linux
+								fisico, virtual, cloud
+								se puede correr en el host, o en el contenedor
+								
+							desventajar:
+								si corre en linux, corre en un container
+								usuario root en el container
+						</aside>
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h2>Docker Architecture</h2>
+						<img src="images/Docker_Architecture.png">
+						
+						<aside class="notes">
+							Docker has a client/server architecture. It has also a REST API that clients use to interact with the engine.
+
+							* Docker Daemon (server) - The background service running on the host that manages building, running and distributing Docker containers. The daemon is the process that runs in the operating system to which clients talk to. 
+							The daemon receives the commands from the Docker client though cli or REST API’s. Docker client can be on the same host as daemon or it can be present on any other host. Manage images and containers.
+
+							* Docker Client - The CLI tool that allows the user to interact with the daemon. More generally, there can be other forms of clients too.
+
+							* Docker registry (Docker Hub) - A registry of Docker images. You can think of the registry as a directory of all available Docker images. If required, one can host their own Docker registries and can use them for pulling images. Using Docker registry, you can build and share images with your team. A registry can be public or private.
+
+							* Images - The blueprints of our application which form the basis of containers. Our app encapsulate with out the necessary stach to run. The read-only template used to build containers. Images are used to store and ship applications.
+
+							* Containers - Created from Docker images and run the actual application. Containers are encapsulated environments in which applications are run. A container is defined by the image and configuration options. 
+							Is basically an instance of an image (like an object in OOP)
+
+							https://www.aquasec.com/wiki/display/containers/Docker+Architecture
+							https://docs.docker.com/engine/docker-overview/
+						</aside>
+					</section>
+					<section>
+						<img src="images/multiplatform.png">
+						<aside class="notes">
+							Multiplatform, it run natives on Linux but on Window/Mac it runs on a VM
+						<aside>	
+					</section>
+				</section>
+
+				<section>
+					<section>
+						<h4>where it all starts - Dockerfile</h4>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							FROM debian.  # set the base image
+							
+							LABEL version="1.0"  # extra metadata 
+					
+							WORKDIR /app    # Set the working directory to /app. 
+							COPY . /app. # # Copy the current directory contents into the container
+
+							RUN apt-get install -qy git ... # install basic apps
+
+							EXPOSE 80  # Make port 80 available to outside this container
+
+							ENV NAME World # Define environment variable
+
+							CMD ["python", "app.py"] # Run app.py when the container launches
+						</code></pre>
+
+						<aside class="notes">
+							In order to build an image in Docker, you first need to set the instructions for this build on a plain text file named Dockerfile. Finally, once you have a Dockerfile, the command docker build will build the image, as we’ll see in more detail later.
+
+							- Dockerfile defines what goes on in the environment inside your container. 
+							- Access to resources like networking interfaces and disk drives is virtualized inside this environment, which is isolated from the rest of your system, so you need to map ports to the outside world, and be specific about what files you want to “copy in” to that environment. 
+
+							WORKDIR is your working directory. 
+
+							13 available cmds
+						</aside>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h3>Demo time!</h3>
+						<img src="https://media1.giphy.com/media/dblx5BS577pFm/giphy.gif?cid=790b761150e692d1243ce62c6700033aab7efec1cda9fffe&rid=giphy.gif" style="align:center; vertical-align:middle" alt="Google" height="315" width="415">
+						<img src="https://media1.tenor.com/images/32845b1f178c23abeed57a72cf3c6315/tenor.gif" style="align:center; vertical-align:middle" alt="Google" height="315" width="455">
+					</section>
+					<section>
+						<h2>Hello world!</h2>
+						<ul>
+							 <li>
+								<a href="https://hub.docker.com/_/hello-world">Hello World Docker Hub</a>	 	
+							 </li>
+							 <li>
+								<a href="https://github.com/docker-library/hello-world">Hello World Github</a>
+							 </li>
+						</ul>
+						<aside class="notes">
+							1. Show docker daemon: docker info (sudo service docker restart)
+							2. Hello world
+								docker run hello-world  (pull & run)
+								docker ps -a
+							3. Sth more interesting:
+								docker run -it hello-world sh
+								docker ps -> ver el <cont_id>
+								docker exec -d <cont_id> touch /etc/toptive-demo
+
+								ls /etc/ => toptive-demo 
+						</aside>
+					</section>
+
+					<section>
+						<small>An app that takes one sentence as input and using Text Analysis, calculates the emotion of the sentence.</small>
+						
+						<img src="https://cdn-media-1.freecodecamp.org/images/JwIBwPsTfBmelKgSrCCkEZuTzC5Ty1pZi3K7">
+						<aside class="notes">
+							This interaction is best illustrated by showing how the data flows between them:
+
+							1. A client app requests the index.html (which in turn requests bundled scripts of ReactJS application)
+							2. The user interacting with the application triggers requests to the Spring WebApp.
+							3. Spring WebApp forwards the requests for sentiment analysis to the Python app.
+							4. Python Application calculates the sentiment and returns the result as a response.
+							5. The Spring WebApp returns the response to the React app. (Which then represents the information to the user.)
+
+							tmuxp load tmuxp.yml
+							ansible-playbook build-images-playbook.yml
+							ansible-playbook run-containers-playbook.yml
+
+							Share image
+								docker login
+								docker tag image username/repository:tag
+									-> For example: docker tag friendlyhello gordon/get-started:part2
+								docker push username/repository:tag
+								borrar y traer del repository:
+									docker run -p 4000:80 username/repository:tag
+						</aside>
+					</section>
+				</section>
+				
+				<section>
+					<section>
+						<h3>Docker CLI commands - [Images]</h3>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Commands for interacting with images
+							$ docker images  # shows all images.
+							$ docker import  # creates an image from a tarball.
+							$ docker build   # creates image from Dockerfile.
+							$ docker commit  # creates image from a container.
+							$ docker rmi     # removes an image.
+							$ docker history # list changes of an image.
+						</code></pre>
+
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							<small># Here are some data on commonly used images:</small>
+							<small>scratch       - ultimate base image and it has 0 files / 0 size.</small>
+							<small>busybox       - minimal Unix, 2.5 MB, around 10000 files.</small>
+							<small>debian:jessie - latest Debian, 122 MB, around 18000 files.</small>
+							<small>ubuntu:14.04  - Ubuntu, 188 MB, around 23000 files.</small>
+						</code></pre>
+						<aside class="notes">
+							docker images
+								Pueden tener capas a su vez
+								“Herencia” entre capas ya creadas Capas “padre” están 1 sola vez en disco/cache
+								Apuntar a menor tamaño busybox < alpine < debian < ubuntu
+						</aside>
+					</section>	
+
+					<section>
+						<h3>Docker CLI commands - [Containers]</h3>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Commands for interacting with containers
+							$ docker create  # creates a container but does not start it.
+							$ docker run     # creates and starts a container.
+							$ docker stop    # stops it.
+							$ docker start   # will start it again.
+							$ docker restart # restarts a container.
+							$ docker rm      # deletes a container.
+							$ docker kill    # sends a SIGKILL to a container.
+							$ docker attach  # will connect to a running container.
+							$ docker wait    # blocks until container stops.
+							$ docker exec    # executes a command in a running container.
+						</code></pre>
+					</section>	
+					
+					<section>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Inspecting Containers
+							$ docker ps      # shows running containers.
+							$ docker inspect # info on a container (incl. IP address).
+							$ docker logs    # gets logs from container.
+							$ docker events  # gets events from container.
+							$ docker port    # shows public facing port of container.
+							$ docker top     # shows running processes in container.
+							$ docker diff    # shows changed files in container's FS.
+							$ docker stats   # shows metrics, memory, cpu, filsystem
+							
+						</code></pre>
+					</section>	
+
+
+					<section>
+						<h4>docker run *</h4>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Run a container interactively like a normal terminal program.
+							$ docker run -it --rm ubuntu
+							<small>(-i)   - send stdin to the process.</small>
+							<small>(-t)   - tell the process that a terminal is present.</small>
+							<small>(--rm) - remove the container on exit.</small>
+
+							# Run a container in the background
+							$ docker run -d ubuntu
+							<small>(-d) - detached mode, you can attach again with docker attach</small>
+
+							# Run a named container and pass it some environment variables
+							$ docker run --name mydb --env MYSQL_USER=db-user \
+								  -e MYSQL_PASSWORD=secret --env-file ./mysql.env mysql
+						</code></pre>
+						<aside class="notes">
+							--name - name the container, otherwise it gets a random name.
+							-env (-e) - Set the environment variable in the container
+							--env-file - Set all environment variables in env-file
+							mysql - use the mysql:latest image.
+						</aside>
+					</section>
+					<section>
+						<h4>volume</h4>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Start a new nginx container with /var/log as a volume
+							$ docker run  -v /var/log nginx
+							<small>Since the directory of the host is not given, the volume is created in /var/lib/docker/volumes/ec3c543bc..535.</small>
+
+							# Start a new nginx container with /var/log as a volume mapped to /tmp on Host
+							$ docker run -v /tmp:/var/log nginx
+						</code></pre>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Mount volumes from another container with --volumes-from.
+							# Start a db container
+							$ docker run -v /var/lib/postgresql/data --name mydb postgres
+
+							# Start a backup container with the volumes taken from the mydb container
+							$ docker run --volumes-from mydb backup
+						</code></pre>
+					</section>	
+				</section>	
+
+				<section>
+					<section>
+						<h3>Best Practices for Building Images</h3>
+						<ul>
+						  <li>.dockerignore</li>
+						  <li>multi-stage builds</li>
+						  <li>Don't install unnecessary packages</li>
+						  <li>Use multi-line commands instead of multiple RUN commands (*)</li>
+						  <li>Enable content trust</li>
+						</ul>
+						<aside class="notes">
+							- Use a .dockerignore file to reduce image size and reduce build time by excluding files from the build context that are unnecessary for the build.
+						  	- Reduce image file sizes (multi-stage builds)
+						  	- Don't install unnecessary packages when building images.
+						  	- Use multi-line commands instead of multiple RUN commands for faster builds when possible (for example, when installing a list of packages).
+
+						  	https://docs.docker.com/develop/develop-images/dockerfile_best-practices
+						</aside>
+
+					</section>
+
+					<section>
+						<h4>Tips and Tricks</h4>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Limit the amount of memory
+							$ docker run -m 256m yourapp
+							
+							# Error response from daemon: Minimum memory limit allowed is 4MB exit
+							$ docker run -m 128 ubuntu true
+
+							# Limit the number of shares of the CPU this process uses 
+							$ docker run --cpu-shares 512 mypp
+
+							# Change the user for the process to www instead of root
+							$ docker run -u=www nginx	
+						</code></pre>
+
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Get the id (-q) of the last (-l) run container
+							$ docker ps -l -q
+							c8044ab1a3d0
+						</code></pre>
+						
+						<pre><code class="Dockerfile" data-trim data-noescape>
+						# Get container IP
+						$ docker inspect -f '{{ .NetworkSettings.IPAddress }}' 6f2c42c05500
+						172.17.0.11
+						</code></pre>
+					</section>
+
+					<section>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+						# Get the environment variables of a running container.
+						$ docker exec -it 6f2c42c05500 env
+
+						PATH=/usr/local/sbin:/usr...
+						HOSTNAME=6f2c42c05500
+						REDIS_1_PORT=tcp://172.17.0.9:6379
+						REDIS_1_PORT_6379_TCP=tcp://172.17.0.9:6379
+						...
+						</code></pre>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Run a shell inside the container with id 6f2c42c0
+							$ docker exec -it 6f2c42c0 sh
+						</code></pre>
+					</section>
+
+					<section>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Dockerfile example
+							FROM dockerfile/nodejs:latest
+							
+							RUN apt-get update && \
+								apt-get install zlib1g-dev && \
+							  	npm install -g pm2 && \
+							  	mkdir -p /app
+							WORKDIR /app
+							COPY . /app
+							
+							CMD pm2 start app.js -x -i 1 && pm2 logs
+						</code></pre>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# Build and run the image
+							$ docker build -t myapp .
+							$ docker run -it --rm myapp
+						</code></pre>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							# To avoid the rebuild, build the image once and then mount the local directory when you run it.
+							$ docker run -it --rm -v $(PWD):/app myapp
+						</code></pre>
+					</section>
+
+					<section>
+						<pre><code class="Dockerfile" data-trim data-noescape>
+							Network --> https://medium.com/elbstack/docker-go-and-privileged-ports-d6354db472c3
+							docker multistage
+							RUN apt/get instasll , one per line for better caching
+
+							# Remove all containers with status=exited
+							$ docker rm $(docker ps -a -q -f status=exited)
+
+							# Stop all containers
+							$ docker stop $(docker ps -q)    - will run stop only for active
+							$ docker stop $(docker ps -aq)  - will run stop for all
+
+							
+							# Remove all docker images
+							$ docker rmi $(docker images -q)
+
+							# Backup of container
+							$ docker ps -a  // choose your one of your container
+							$ docker commit -p <CONTAINER_ID> <YOUR_BACKUP_NAME>
+							$ docker images // it will appear one image with <YOUR_BACKUP_NAME>
+							
+							# save docker container to archive
+							$ docker save -o <CONTAINER_FILE>.tar <YOUR_BACKUP_NAME>
+
+							# Restore docker container
+							$ docker load -i <CONTAINER_FILE>.tar
+
+							# Tailing logs
+							$ sudo docker logs -t --tail 1000 my_postgres 2>&1 | grep -i error
+
+							# Clean up After Yourself
+							RUN * && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+							# RUN apt-get --no-install-recommends ...
+
+							# Create a Non-Root User
+							RUN useradd --user-group --shell /bin/false resin  
+							USER resin  
+
+
+							docker build -t pepe .
+							BUILD WITH DIFF FILE
+							docker export -> .tgz -> docker 
+							docker login -> la configuración se guardará en ~/.docker/config.json
+						</code></pre>
+					</section>
+
+					<aside class="notes">
+						https://nickjanetakis.com/blog/docker-tip-80-waiting-for-detached-containers-to-finish
+						http://anders.janmyr.com/2015/03/a-not-very-short-introduction-to-docker.html
+
+						Cleaning up
+						https://www.sitepoint.com/how-to-build-an-image-with-the-dockerfile/
+					<aside>
+				</section>
+				
+				<section>
+					<section>
+						<h2>Wrapping out</h2>
+						<ul>
+						  <li>Docker is here to stay.</li>
+						  <li>It fixes dependency hell.</li>
+						  <li>Containers are fast!</li>
+						  <li>Cluster solutions exists, but don't expect them to be seamless, yet!</li>
+						</ul>
+						<aside class="notes">
+							https://github.com/hangyan/docker-resources
+							https://github.com/veggiemonk/awesome-docker
+						</aside>
+					</section>
+				
+					
+					<section data-background-image="https://media.giphy.com/media/10h2d14eEV2HT2/giphy.gif">
+						<h2>Next steps: Orchestration</h2>
+						<ul>
+						  <li>Docker Compose</li>
+						  <li>Docker Swarm</li>
+						  <li>Mesosphere</li>
+						  <li>Kubernetes</li>						  
+						</ul>
+					</section>
+
+					<section data-background-image="images/universo-docker.png">
+					</section>		
+				</section>
+				
+				<section data-background-image="https://media3.giphy.com/media/l3q2Wl7Wpz09Z5hfi/giphy.gif?cid=790b761162d462934792411e7301eaf07a9a3c11fd3029ea&rid=giphy.gif">
+					<section>
+					Questions?
+					</section>
+					<section>
+						Thx u!
+					</section>
+				</section>
+				
+
+			</div>
+		</div>
+
+		<script src="lib/js/head.min.js"></script>
+		<script src="js/reveal.js"></script>
+		<script>
+			// More info https://github.com/hakimel/reveal.js#configuration
+			Reveal.initialize({
+				controls: true,
+				progress: true,
+				history: true,
+				center: true,
+				transition: 'slide', // none/fade/slide/convex/concave/zoom
+
+				// More info https://github.com/hakimel/reveal.js#dependencies
+				dependencies: [
+					{ src: 'lib/js/classList.js', condition: function() { return !document.body.classList; } },
+					{ src: 'plugin/markdown/marked.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/markdown/markdown.js', condition: function() { return !!document.querySelector( '[data-markdown]' ); } },
+					{ src: 'plugin/highlight/highlight.js', async: true, callback: function() { hljs.initHighlightingOnLoad(); } },
+					{ src: 'plugin/search/search.js', async: true },
+					{ src: 'plugin/zoom-js/zoom.js', async: true },
+					{ src: 'plugin/notes/notes.js', async: true }
+				]
+			});
+		</script>
+	</body>
+</html>
