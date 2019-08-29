@@ -39,4 +39,4 @@ tmuxp load tmuxp.yml
 * use `docker_container` on `run-containers-playbook.yml`
 
 # Credits
-[Learn Kubernetes in Under 3 Hours: A Detailed Guide to Orchestrating Containers](https://medium.freecodecamp.org/learn-kubernetes-in-under-3-hours-a-detailed-guide-to-orchestrating-containers-114ff420e882)
+[rinormaloku-k8s-mastery](https://github.com/rinormaloku/k8s-mastery)
