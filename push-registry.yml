@@ -9,7 +9,6 @@
     - name: push sa-frontend image to docker hub
       command: docker push fgriberi/sentiment-analysis-frontend:demo
 
-
     - name: tag sa-logic image
       command: docker tag sentiment-analysis-logic fgriberi/sentiment-analysis-logic:demo
 

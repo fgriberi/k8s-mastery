@@ -313,7 +313,7 @@
 							3. Sth more interesting:
 								docker run -it hello-world sh
 								docker ps -> ver el <cont_id>
-								docker exec -d <cont_id> touch /etc/toptive-demo
+								docker exec -d <cont_id> touch /etc/aaa-toptive-demo
 
 								ls /etc/ => toptive-demo 
 						</aside>
@@ -542,10 +542,6 @@
 
 					<section>
 						<pre><code class="Dockerfile" data-trim data-noescape>
-							Network --> https://medium.com/elbstack/docker-go-and-privileged-ports-d6354db472c3
-							docker multistage
-							RUN apt/get instasll , one per line for better caching
-
 							# Remove all containers with status=exited
 							$ docker rm $(docker ps -a -q -f status=exited)
 
@@ -579,12 +575,6 @@
 							# Create a Non-Root User
 							RUN useradd --user-group --shell /bin/false resin  
 							USER resin  
-
-
-							docker build -t pepe .
-							BUILD WITH DIFF FILE
-							docker export -> .tgz -> docker 
-							docker login -> la configuración se guardará en ~/.docker/config.json
 						</code></pre>
 					</section>
 
